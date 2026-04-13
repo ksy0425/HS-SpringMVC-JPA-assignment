@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import kr.ac.hansung.cse.exception.ProductNotFoundException;
 import kr.ac.hansung.cse.model.Product;
 import kr.ac.hansung.cse.model.ProductForm;
+import kr.ac.hansung.cse.service.CategoryService;
 import kr.ac.hansung.cse.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,23 +36,35 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/products")
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
-
+    private final CategoryService categoryService;
 
     // ─────────────────────────────────────────────────────────────────
     // GET /products - 상품 목록 조회
     // ─────────────────────────────────────────────────────────────────
 
     @GetMapping
-    public String listProducts(Model model) {
-        List<Product> products = productService.getAllProducts();
+    public String listProducts(@RequestParam(required = false) String keyword,
+                               @RequestParam(required = false) Long categoryId,
+                               Model model) {
+        List<Product> products;
+
+        if (keyword != null && !keyword.isBlank()) {
+            products = productService.searchByName(keyword);
+        } else if (categoryId != null) {
+            products = productService.searchByCategory(categoryId);
+        } else {
+            products = productService.getAllProducts();
+        }
+
         model.addAttribute("products", products);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryId", categoryId);
+
         return "productList";
     }
 

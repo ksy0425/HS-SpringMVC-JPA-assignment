@@ -134,6 +134,9 @@ public class ProductService {
         productRepository.delete(id);
     }
 
+    /**
+     * 검색 기능
+     */
     public List<Product> searchByName(String keyword) {
         return productRepository.findByNameContaining(keyword);
     }

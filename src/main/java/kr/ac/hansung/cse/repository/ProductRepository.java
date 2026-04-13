@@ -132,6 +132,9 @@ public class ProductRepository {
         }
     }
 
+    /**
+     * 검색 기능
+     */
     public List<Product> findByNameContaining(String keyword) {
         return entityManager.createQuery(
                         "SELECT p FROM Product p WHERE p.name LIKE :keyword",
