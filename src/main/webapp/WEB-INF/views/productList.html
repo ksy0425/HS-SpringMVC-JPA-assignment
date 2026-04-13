@@ -39,6 +39,25 @@
 
     <h1>상품 목록</h1>
 
+    <!-- 검색 UI 추가 -->
+    <form th:action="@{/products}" method="get">
+
+        <input type="text" name="keyword"
+               th:value="${keyword}"
+               placeholder="상품명 검색"/>
+
+        <select name="categoryId">
+            <option value="">-- 전체 카테고리 --</option>
+            <option th:each="cat : ${categories}"
+                    th:value="${cat.id}"
+                    th:text="${cat.name}"
+                    th:selected="${cat.id == categoryId}">
+            </option>
+        </select> <button type="submit">검색</button>
+    </form>
+
+    <br>
+
     <!--
         th:if="${successMessage}":
         Model에 successMessage 속성이 있을 때만 이 div를 렌더링합니다.
